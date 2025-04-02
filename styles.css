@@ -1,0 +1,204 @@
+/* Dashboard Styles for MEXC Trading Bot */
+
+/* Custom sidebar styling */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Behind the navbar */
+  padding: 48px 0 0; /* Height of navbar */
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: static;
+    padding-top: 1.5rem;
+  }
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: .5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+/* Card styles */
+.border-left-primary {
+  border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+  border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+  border-left: 0.25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+  border-left: 0.25rem solid #f6c23e !important;
+}
+
+.border-left-danger {
+  border-left: 0.25rem solid #e74a3b !important;
+}
+
+/* Typography */
+.text-xs {
+  font-size: 0.7rem;
+}
+
+.text-gray-300 {
+  color: #dddfeb !important;
+}
+
+/* Signal status colors */
+.signal-buy {
+  color: #1cc88a;
+  font-weight: bold;
+}
+
+.signal-sell {
+  color: #e74a3b;
+  font-weight: bold;
+}
+
+.signal-neutral {
+  color: #858796;
+  font-weight: bold;
+}
+
+/* Indicator strength colors */
+.indicator-bullish {
+  color: #1cc88a;
+}
+
+.indicator-bearish {
+  color: #e74a3b;
+}
+
+.indicator-neutral {
+  color: #858796;
+}
+
+/* Table styling */
+.table-hover tbody tr:hover {
+  background-color: rgba(78, 115, 223, 0.05);
+}
+
+/* Chart container */
+.chart-container {
+  position: relative;
+  margin: auto;
+  height: 400px;
+  width: 100%;
+}
+
+/* Profit/Loss styles */
+.profit-positive {
+  color: #1cc88a;
+  font-weight: bold;
+}
+
+.profit-negative {
+  color: #e74a3b;
+  font-weight: bold;
+}
+
+/* Custom badge colors */
+.badge-soft-success {
+  color: #1cc88a;
+  background-color: rgba(28, 200, 138, 0.1);
+}
+
+.badge-soft-danger {
+  color: #e74a3b;
+  background-color: rgba(231, 74, 59, 0.1);
+}
+
+.badge-soft-warning {
+  color: #f6c23e;
+  background-color: rgba(246, 194, 62, 0.1);
+}
+
+.badge-soft-info {
+  color: #36b9cc;
+  background-color: rgba(54, 185, 204, 0.1);
+}
+
+/* Action buttons in tables */
+.action-buttons .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25rem solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner 0.75s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Alert styles */
+#alert-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+  max-width: 350px;
+}
+
+#alert-container .alert {
+  margin-bottom: 10px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+/* Custom switch sizes */
+.form-switch .form-check-input {
+  height: 1.5em;
+  width: 3em;
+  margin-top: 0;
+}
+
+/* Tooltip custom styling */
+.tooltip-inner {
+  max-width: 200px;
+  padding: 0.5rem;
+  background-color: #4e73df;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=top] .arrow::before,
+.tooltip.bs-tooltip-top .arrow::before {
+  border-top-color: #4e73df;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=right] .arrow::before,
+.tooltip.bs-tooltip-right .arrow::before {
+  border-right-color: #4e73df;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=bottom] .arrow::before,
+.tooltip.bs-tooltip-bottom .arrow::before {
+  border-bottom-color: #4e73df;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=left] .arrow::before,
+.tooltip.bs-tooltip-left .arrow::before {
+  border-left-color: #4e73df;
+}

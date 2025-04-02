@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEXC Trading Bot Dashboard Connector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0f1721;
+            color: #e9ecef;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #1a2332;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        h1, h2, h3 {
+            color: #75b6f3;
+            margin-top: 0;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #054213;
+            color: #98e49e;
+            border: 1px solid #13632e;
+        }
+        .error {
+            background-color: #5a0c14;
+            color: #f8d7da;
+            border: 1px solid #842029;
+        }
+        .warning {
+            background-color: #664d03;
+            color: #fff3cd;
+            border: 1px solid #997404;
+        }
+        .info {
+            background-color: #055160;
+            color: #d1ecf1;
+            border: 1px solid #087990;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0b5ed7;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3344;
+            border-radius: 5px;
+            border: 1px solid #3a4255;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #3a4255;
+        }
+        th {
+            background-color: #252d3d;
+            color: #75b6f3;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .button-primary {
+            background-color: #0d6efd;
+        }
+        .button-success {
+            background-color: #198754;
+        }
+        .button-danger {
+            background-color: #dc3545;
+        }
+        .button-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header-status {
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: #198754;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #3a4255;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 2px solid #0d6efd;
+            color: #75b6f3;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .profit {
+            color: #00c853;
+        }
+        .loss {
+            color: #ff3d00;
+        }
+        .loader {
+            border: 4px solid #3a4255;
+            border-top: 4px solid #0d6efd;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .api-url {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #252d3d;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MEXC Trading Bot Dashboard</h1>
+            <span id="connectionStatus" class="header-status">Connecting...</span>
+        </div>
+        
+        <div id="statusMessage" class="status info">
+            Checking connection to bot API on port 3001...
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="overview">Overview</div>
+            <div class="tab" data-tab="connection">Connection</div>
+            <div class="tab" data-tab="help">Help</div>
+        </div>
+        
+        <div id="overview" class="tab-content active">
+            <div class="button-group">
+                <button id="checkConnectionBtn" class="button-primary">Check Connection</button>
+                <button id="openDashboardBtn" class="button-success" disabled>Open Dashboard</button>
+                <button id="directDashboardBtn" class="button-warning">Direct Dashboard Access</button>
+            </div>
+            
+            <div class="details" id="botDetails" style="display: none;">
+                <h3>Bot Information:</h3>
+                <div id="loader" class="loader"></div>
+                <table id="botInfoTable">
+                    <tr>
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div id="connection" class="tab-content">
+            <h3>Connection Settings</h3>
+            <div class="details">
+                <p>This connector is configured to communicate with the MEXC Trading Bot running on:</p>
+                <div class="api-url">http://localhost:3001</div>
+                <p>The connector uses a proxy server to avoid CORS issues when accessing the bot API.</p>
+                <p>Current connection status: <span id="statusIndicator">Unknown</span></p>
+                <p>Last checked: <span id="lastChecked">Never</span></p>
+            </div>
+            
+            <h3>Direct API Access</h3>
+            <div class="details">
+                <p>You can access the bot's API directly at these endpoints:</p>
+                <ul>
+                    <li><strong>Status:</strong> <span class="api-url">http://localhost:3001/api/status</span></li>
+                    <li><strong>Positions:</strong> <span class="api-url">http://localhost:3001/api/positions</span></li>
+                    <li><strong>Config:</strong> <span class="api-url">http://localhost:3001/api/config</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="help" class="tab-content">
+            <h3>Troubleshooting</h3>
+            <div class="details">
+                <h4>Connection Issues</h4>
+                <p>If you're experiencing connection issues, check the following:</p>
+                <ul>
+                    <li>Ensure the bot is running on port 3001</li>
+                    <li>Check if the connector server is running on port 3002</li>
+                    <li>Try accessing the dashboard directly at <span class="api-url">http://localhost:3001</span></li>
+                    <li>Restart the bot and connector server if necessary</li>
+                </ul>
+                
+                <h4>API Errors</h4>
+                <p>If you see API errors in the status message:</p>
+                <ul>
+                    <li>The bot may be running but experiencing internal errors</li>
+                    <li>Check the bot's console output for error messages</li>
+                    <li>Ensure your API credentials are correctly configured in the .env file</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const statusMessage = document.getElementById('statusMessage');
+            const connectionStatus = document.getElementById('connectionStatus');
+            const checkConnectionBtn = document.getElementById('checkConnectionBtn');
+            const openDashboardBtn = document.getElementById('openDashboardBtn');
+            const directDashboardBtn = document.getElementById('directDashboardBtn');
+            const botDetails = document.getElementById('botDetails');
+            const botInfoTable = document.getElementById('botInfoTable');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const lastChecked = document.getElementById('lastChecked');
+            const loader = document.getElementById('loader');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // API URL for the running bot (proxied through our connector server)
+            const apiUrl = '/api/status';
+            let connectionCheckInterval = null;
+            let isConnected = false;
+            
+            // Function to switch tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+                });
+            });
+            
+            // Function to check connection
+            async function checkConnection() {
+                statusMessage.className = 'status info';
+                statusMessage.textContent = 'Checking connection to bot API on port 3001...';
+                connectionStatus.textContent = 'Checking...';
+                botDetails.style.display = 'none';
+                openDashboardBtn.disabled = true;
+                loader.style.display = 'block';
+                
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) {
+                        throw new Error(`API responded with status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    isConnected = true;
+                    
+                    // Update status messages
+                    statusMessage.className = 'status success';
+                    statusMessage.textContent = 'Connected to bot successfully!';
+                    connectionStatus.textContent = 'Connected';
+                    statusIndicator.textContent = 'Connected';
+                    lastChecked.textContent = new Date().toLocaleTimeString();
+                    
+                    // Enable dashboard button
+                    openDashboardBtn.disabled = false;
+                    
+                    // Display bot details
+                    displayBotInfo(data);
+                    
+                } catch (error) {
+                    isConnected = false;
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = `Connection error: ${error.message}. Make sure the bot is running on port 3001.`;
+                    connectionStatus.textContent = 'Disconnected';
+                    statusIndicator.textContent = 'Disconnected';
+                    lastChecked.textContent = new Date().toLocaleTimeString();
+                    loader.style.display = 'none';
+                }
+            }
+            
+            // Function to display bot information
+            function displayBotInfo(data) {
+                // Clear existing rows except header
+                while (botInfoTable.rows.length > 1) {
+                    botInfoTable.deleteRow(1);
+                }
+                
+                // Add rows for each property
+                const properties = [
+                    { name: 'Status', value: data.running ? 'Running' : 'Paused' },
+                    { name: 'Mode', value: data.dryRun ? 'Dry Run' : 'Live Trading' },
+                    { name: 'Account Balance', value: `$${parseFloat(data.accountBalance).toFixed(2)}` },
+                    { name: 'Uptime', value: formatUptime(data.uptime) },
+                    { name: 'Total Trades', value: data.totalTrades },
+                    { name: 'Win Rate', value: `${data.winRate}%` },
+                    { name: 'Active Pairs', value: `${data.activePairsCount}/${data.totalPairsCount}` }
+                ];
+                
+                properties.forEach(prop => {
+                    const row = botInfoTable.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    cell1.textContent = prop.name;
+                    cell2.textContent = prop.value;
+                    
+                    // Add special formatting for certain values
+                    if (prop.name === 'Mode' && prop.value === 'Live Trading') {
+                        cell2.classList.add('profit');
+                    } else if (prop.name === 'Mode' && prop.value === 'Dry Run') {
+                        cell2.style.color = '#ffc107';
+                    }
+                });
+                
+                loader.style.display = 'none';
+                botDetails.style.display = 'block';
+            }
+            
+            // Function to format uptime
+            function formatUptime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                return `${hours}h ${minutes}m ${secs}s`;
+            }
+            
+            // Function to start periodic connection checks
+            function startConnectionCheck() {
+                if (connectionCheckInterval) {
+                    clearInterval(connectionCheckInterval);
+                }
+                
+                // Check immediately
+                checkConnection();
+                
+                // Then check every 30 seconds
+                connectionCheckInterval = setInterval(checkConnection, 30000);
+            }
+            
+            // Event listener for check connection button
+            checkConnectionBtn.addEventListener('click', checkConnection);
+            
+            // Event listener for open dashboard button
+            openDashboardBtn.addEventListener('click', function() {
+                window.location.href = '/bot-dashboard';
+            });
+            
+            // Event listener for direct dashboard access button
+            directDashboardBtn.addEventListener('click', function() {
+                window.open('http://localhost:3001', '_blank');
+            });
+            
+            // Start periodic connection checks
+            startConnectionCheck();
+            
+            // Clean up interval on page unload
+            window.addEventListener('beforeunload', function() {
+                if (connectionCheckInterval) {
+                    clearInterval(connectionCheckInterval);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

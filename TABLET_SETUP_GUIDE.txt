@@ -1,0 +1,95 @@
+==============================================
+  MEXC TRADING BOT - TABLET SETUP GUIDE
+==============================================
+
+This guide explains how to set up the full-featured MEXC Trading Bot on your Samsung tablet.
+
+STEP 1: PREPARE YOUR FILES
+--------------------------
+Option A - Direct Transfer:
+1. Connect your tablet to a computer via USB
+2. Copy the entire 'mexc-trading-bot' folder to your tablet's storage
+3. Remember where you placed it (e.g., /storage/emulated/0/Download)
+
+Option B - GitHub (Recommended):
+1. Create a private GitHub repository at github.com
+2. Add your files to the repository
+3. On your tablet, you'll clone this repository in Step 3
+
+STEP 2: INSTALL TERMUX
+--------------------------
+1. Install Termux from F-Droid: https://f-droid.org/packages/com.termux/
+   (F-Droid is recommended over Play Store for the most up-to-date version)
+2. Open Termux after installation
+
+STEP 3: RUN THE SETUP SCRIPT
+--------------------------
+If you used Direct Transfer:
+1. In Termux, run:
+   - pkg update && pkg upgrade
+   - pkg install git
+   - termux-setup-storage
+   - cd /storage/emulated/0/Download/mexc-trading-bot
+   - chmod +x termux-setup.sh
+   - ./termux-setup.sh
+   - Select option 2 when prompted (Copy from internal storage)
+
+If you used GitHub:
+1. In Termux, run:
+   - pkg update && pkg upgrade
+   - pkg install git
+   - git clone https://github.com/YOUR-USERNAME/mexc-trading-bot.git
+   - cd mexc-trading-bot
+   - chmod +x termux-setup.sh
+   - ./termux-setup.sh
+   - Select option 1 when prompted (Clone from GitHub)
+
+STEP 4: START THE BOT
+--------------------------
+After setup is complete, you have two options:
+
+For regular sessions:
+- ./start-bot.sh
+
+For background sessions (continues when Termux is closed):
+- pkg install tmux
+- ./start-with-tmux.sh
+
+STEP 5: ACCESS THE DASHBOARD
+--------------------------
+On your tablet's browser, go to: http://127.0.0.1:3000
+
+The dashboard will show:
+- Open positions
+- Market analysis
+- Strategy signals
+- Account performance
+
+IMPORTANT SAFETY FEATURES
+--------------------------
+The full-featured bot includes these safety features:
+
+1. Kill Switch - In the dashboard, press the red "KILL SWITCH" button to immediately stop all trading activity.
+
+2. Emergency Close - Use the "CLOSE ALL POSITIONS" button to exit all trades at current market prices.
+
+3. Position Size Limits - The bot will never exceed the maximum position size (default: 10 USDT per trade).
+
+4. Daily Loss Limit - Trading automatically stops if daily losses exceed your configured limit (default: -10%).
+
+TROUBLESHOOTING
+--------------------------
+If you encounter an error during npm install:
+- Try running: npm install --no-optional
+- Or, for specific modules: npm install winston axios express socket.io chart.js dotenv
+
+To access logs:
+- cat bot.log
+
+If you need to kill the bot:
+- If using tmux: tmux kill-session -t mexc_bot
+- Otherwise, press Ctrl+C in the terminal
+
+REMEMBER: START IN DRY RUN MODE
+--------------------------
+Always ensure DRY_RUN=true in your .env file when testing!

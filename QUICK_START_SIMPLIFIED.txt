@@ -1,0 +1,75 @@
+==============================================
+  MEXC TRADING BOT - QUICK START GUIDE
+==============================================
+
+This guide helps you test the simplified bot with real market data while 
+you prepare to set up the full-featured version on your tablet.
+
+WHAT THE SIMPLIFIED BOT CAN DO:
+-------------------------------
+- Connect to the real MEXC API
+- Fetch actual market data for multiple cryptocurrencies
+- Analyze using the same technical indicators as the full bot
+- Generate trading signals based on your configured strategy
+- Simulate trades in DRY RUN mode
+
+RUNNING THE SIMPLIFIED BOT:
+---------------------------
+1. To run the simplified bot with real market data, execute:
+   node src/simplified-bot.js
+
+2. The bot will:
+   - Connect to the MEXC API
+   - Download real-time price data for your configured symbols
+   - Apply technical indicators (MA, RSI)
+   - Generate buy/sell signals based on your strategy
+   - Simulate positions (no real trades in DRY RUN mode)
+
+CUSTOMIZING THE STRATEGY:
+------------------------
+Open src/simplified-bot.js and modify these parameters:
+
+1. Signal Generation (around line 125):
+   ```javascript
+   // MA crossover (MA5 > MA20)
+   if (ma5 > ma20) signalScore++;
+   
+   // RSI oversold condition
+   if (rsi < 30) signalScore++;  // Try different values (25-35)
+   
+   // Simple price momentum
+   if (lastPrice > prices[prices.length - 5]) signalScore++;
+   ```
+
+2. Position Size & Risk (around line 151):
+   ```javascript
+   const positionSize = calculatePositionSize(config.accountBalance, config.riskPercent);
+   ```
+
+3. Symbol List (around line 18):
+   ```javascript
+   symbolList: [
+     "BTCUSDT", "ETHUSDT", "XRPUSDT", "BNBUSDT", "ADAUSDT",
+     "DOGEUSDT", "SOLUSDT", "MATICUSDT", "DOTUSDT", "LTCUSDT"
+   ]
+   ```
+
+COMPARING WITH THE FULL BOT:
+---------------------------
+The simplified bot lacks these features from the full version:
+
+1. Web Dashboard - No visual interface
+2. Safety Features - No kill switch or loss limits
+3. Complex Analysis - Fewer technical indicators
+4. Performance Tracking - No trade history or analytics
+
+RECOMMENDED WORKFLOW:
+--------------------
+1. Use the simplified bot to test and refine your strategy
+2. Follow the TABLET_SETUP_GUIDE.txt to set up the full bot
+3. Once the full bot is running, use its advanced features and dashboard
+
+CONCLUSION:
+----------
+The simplified bot is a great way to start testing your strategy with real market 
+data while you set up the more comprehensive full-featured bot on your tablet.

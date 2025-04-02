@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEXC Trading Bot Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: #343a40;
+      color: white;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .status-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .status-running {
+      background-color: #28a745;
+    }
+    
+    .status-paused {
+      background-color: #ffc107;
+      color: #343a40;
+    }
+    
+    .status-dry-run {
+      background-color: #17a2b8;
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .sidebar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    
+    .account-info {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .account-balance {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #343a40;
+      margin: 0.5rem 0;
+    }
+    
+    .account-subtitle {
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    
+    .stat-item {
+      margin-bottom: 15px;
+    }
+    
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0;
+    }
+    
+    .stat-label {
+      color: #6c757d;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+    
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    table th,
+    table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    table th {
+      font-weight: 500;
+      color: #6c757d;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    tbody tr:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+    
+    .signal-neutral {
+      color: #6c757d;
+    }
+    
+    .signal-buy {
+      color: #28a745;
+      font-weight: 500;
+    }
+    
+    .signal-sell {
+      color: #dc3545;
+      font-weight: 500;
+    }
+    
+    .profit-positive {
+      color: #28a745;
+      font-weight: 500;
+    }
+    
+    .profit-negative {
+      color: #dc3545;
+      font-weight: 500;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0069d9;
+    }
+    
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    
+    .btn-warning {
+      background-color: #ffc107;
+      color: #343a40;
+    }
+    
+    .btn-warning:hover {
+      background-color: #e0a800;
+    }
+    
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    
+    .indicator {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .indicator-name {
+      font-weight: 500;
+    }
+    
+    .indicator-bullish {
+      color: #28a745;
+    }
+    
+    .indicator-bearish {
+      color: #dc3545;
+    }
+    
+    .chart-container {
+      height: 300px;
+      margin-top: 20px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">MEXC Trading Bot</div>
+        <div>
+          <span class="status-badge status-running">Running</span>
+          <span class="status-badge status-dry-run">Dry Run</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="dashboard-grid">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="account-info">
+          <p class="account-subtitle">Account Balance</p>
+          <p class="account-balance">$150.00</p>
+          <p class="account-subtitle">Dry Run Mode</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat-item">
+            <p class="stat-value">0h 10m 35s</p>
+            <p class="stat-label">Uptime</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-value">4</p>
+            <p class="stat-label">Open Positions</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-value">7</p>
+            <p class="stat-label">Total Trades</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-value">71.4%</p>
+            <p class="stat-label">Win Rate</p>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary">Force Trade</button>
+          <button class="btn btn-warning">Pause Bot</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Open Positions Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Open Positions</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Entry Price</th>
+                <th>Current Price</th>
+                <th>Size</th>
+                <th>P/L</th>
+                <th>Stop Loss</th>
+                <th>Take Profit</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>XRPUSDT</td>
+                <td>$127.07</td>
+                <td>$128.35</td>
+                <td>$1.50</td>
+                <td class="profit-positive">+1.01%</td>
+                <td>$124.53</td>
+                <td>$133.43</td>
+                <td><button class="btn btn-danger btn-sm">Close</button></td>
+              </tr>
+              <tr>
+                <td>BNBUSDT</td>
+                <td>$109.36</td>
+                <td>$110.25</td>
+                <td>$1.50</td>
+                <td class="profit-positive">+0.81%</td>
+                <td>$107.17</td>
+                <td>$114.83</td>
+                <td><button class="btn btn-danger btn-sm">Close</button></td>
+              </tr>
+              <tr>
+                <td>SOLUSDT</td>
+                <td>$199.45</td>
+                <td>$198.75</td>
+                <td>$1.50</td>
+                <td class="profit-negative">-0.35%</td>
+                <td>$195.46</td>
+                <td>$209.42</td>
+                <td><button class="btn btn-danger btn-sm">Close</button></td>
+              </tr>
+              <tr>
+                <td>MATICUSDT</td>
+                <td>$176.87</td>
+                <td>$181.52</td>
+                <td>$1.50</td>
+                <td class="profit-positive">+2.63%</td>
+                <td>$173.33</td>
+                <td>$185.71</td>
+                <td><button class="btn btn-danger btn-sm">Close</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Market Signals Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Market Signals</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Signal</th>
+                <th>Score</th>
+                <th>Price</th>
+                <th>MA5</th>
+                <th>MA20</th>
+                <th>RSI</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>BTCUSDT</td>
+                <td class="signal-neutral">NEUTRAL</td>
+                <td>1/3</td>
+                <td>$183.35</td>
+                <td>$183.80</td>
+                <td>$182.91</td>
+                <td>61.72</td>
+                <td><button class="btn btn-primary btn-sm">Trade</button></td>
+              </tr>
+              <tr>
+                <td>ETHUSDT</td>
+                <td class="signal-neutral">NEUTRAL</td>
+                <td>1/3</td>
+                <td>$135.87</td>
+                <td>$136.85</td>
+                <td>$135.85</td>
+                <td>52.95</td>
+                <td><button class="btn btn-primary btn-sm">Trade</button></td>
+              </tr>
+              <tr>
+                <td>XRPUSDT</td>
+                <td class="signal-buy">BUY</td>
+                <td>2/3</td>
+                <td>$127.07</td>
+                <td>$126.73</td>
+                <td>$125.91</td>
+                <td>60.11</td>
+                <td><button class="btn btn-secondary btn-sm" disabled>Open</button></td>
+              </tr>
+              <tr>
+                <td>BNBUSDT</td>
+                <td class="signal-buy">BUY</td>
+                <td>2/3</td>
+                <td>$109.36</td>
+                <td>$109.31</td>
+                <td>$106.17</td>
+                <td>77.82</td>
+                <td><button class="btn btn-secondary btn-sm" disabled>Open</button></td>
+              </tr>
+              <tr>
+                <td>ADAUSDT</td>
+                <td class="signal-neutral">NEUTRAL</td>
+                <td>1/3</td>
+                <td>$194.22</td>
+                <td>$196.41</td>
+                <td>$193.98</td>
+                <td>61.32</td>
+                <td><button class="btn btn-primary btn-sm">Trade</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bot Settings Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Bot Settings</h3>
+            <button class="btn btn-secondary">Edit</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <div class="indicator">
+                <span class="indicator-name">Risk Percent</span>
+                <span>1.0%</span>
+              </div>
+              <div class="indicator">
+                <span class="indicator-name">Stop Loss</span>
+                <span>2.0%</span>
+              </div>
+              <div class="indicator">
+                <span class="indicator-name">Take Profit</span>
+                <span>5.0%</span>
+              </div>
+              <div class="indicator">
+                <span class="indicator-name">Trailing Stop</span>
+                <span>1.0%</span>
+              </div>
+            </div>
+            <div>
+              <div class="indicator">
+                <span class="indicator-name">Dry Run Mode</span>
+                <span>Enabled</span>
+              </div>
+              <div class="indicator">
+                <span class="indicator-name">Monitoring Pairs</span>
+                <span>10</span>
+              </div>
+              <div class="indicator">
+                <span class="indicator-name">Min Signal Score</span>
+                <span>2/3</span>
+              </div>
+              <div class="indicator">
+                <span class="indicator-name">Update Interval</span>
+                <span>60 seconds</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // This would be replaced with actual data and functionality
+    // in a real implementation
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Dashboard loaded');
+      
+      // Example of updating data in real implementation
+      // setInterval(updateData, 60000);
+      
+      // Add event listeners to buttons
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const action = this.textContent.trim();
+          console.log(`Button clicked: ${action}`);
+          
+          if (action === 'Force Trade') {
+            alert('Forcing trade execution...');
+          } else if (action === 'Pause Bot') {
+            alert('Bot paused');
+            this.textContent = 'Resume Bot';
+            this.classList.remove('btn-warning');
+            this.classList.add('btn-success');
+            document.querySelector('.status-running').textContent = 'Paused';
+            document.querySelector('.status-running').classList.remove('status-running');
+            document.querySelector('.status-badge:first-child').classList.add('status-paused');
+          } else if (action === 'Resume Bot') {
+            alert('Bot resumed');
+            this.textContent = 'Pause Bot';
+            this.classList.remove('btn-success');
+            this.classList.add('btn-warning');
+            document.querySelector('.status-paused').textContent = 'Running';
+            document.querySelector('.status-paused').classList.remove('status-paused');
+            document.querySelector('.status-badge:first-child').classList.add('status-running');
+          } else if (action === 'Close') {
+            const symbol = this.closest('tr').cells[0].textContent;
+            alert(`Closing position for ${symbol}...`);
+            this.closest('tr').remove();
+          } else if (action === 'Trade') {
+            const symbol = this.closest('tr').cells[0].textContent;
+            alert(`Executing trade for ${symbol}...`);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
